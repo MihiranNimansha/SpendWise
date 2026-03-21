@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="4dp"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Left Circle & Emoji -->
+        <View
+            android:id="@+id/bgCategoryColor"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_circle"
+            android:backgroundTint="#FFF3E0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvHistoryCategoryEmoji"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="@+id/bgCategoryColor"
+            app:layout_constraintEnd_toEndOf="@+id/bgCategoryColor"
+            app:layout_constraintStart_toStartOf="@+id/bgCategoryColor"
+            app:layout_constraintTop_toTopOf="@+id/bgCategoryColor"
+            tools:text="🍔" />
+
+        <!-- Center Detail Stack -->
+        <TextView
+            android:id="@+id/tvHistoryTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tvHistoryAmount"
+            app:layout_constraintStart_toEndOf="@+id/bgCategoryColor"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Lunch at KFC" />
+
+        <TextView
+            android:id="@+id/tvHistoryDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/tvHistoryTitle"
+            app:layout_constraintStart_toStartOf="@+id/tvHistoryTitle"
+            app:layout_constraintTop_toBottomOf="@+id/tvHistoryTitle"
+            tools:text="15 Mar 2025" />
+
+        <TextView
+            android:id="@+id/tvHistoryCategoryName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_rounded_chip"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="10sp"
+            app:layout_constraintStart_toStartOf="@+id/tvHistoryTitle"
+            app:layout_constraintTop_toBottomOf="@+id/tvHistoryDate"
+            tools:text="Food" />
+
+        <TextView
+            android:id="@+id/tvHistoryNote"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:textStyle="italic"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/tvHistoryTitle"
+            app:layout_constraintStart_toStartOf="@+id/tvHistoryTitle"
+            app:layout_constraintTop_toBottomOf="@+id/tvHistoryCategoryName"
+            tools:text="Bought lunch with friends" />
+
+        <!-- Right Side -->
+        <TextView
+            android:id="@+id/tvHistoryAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorError"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="-Rs. 2500.00" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="tap to edit"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="10sp"
+            app:layout_constraintEnd_toEndOf="@+id/tvHistoryAmount"
+            app:layout_constraintTop_toBottomOf="@+id/tvHistoryAmount" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
