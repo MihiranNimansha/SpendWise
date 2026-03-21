@@ -1,0 +1,118 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'com.google.devtools.ksp'
+    id 'com.google.gms.google-services'
+}
+
+// Release-signing secrets are read from environment variables or local.properties
+// (never hard-coded here). Keys: SPENDWISE_STORE_FILE, SPENDWISE_STORE_PASSWORD,
+// SPENDWISE_KEY_ALIAS, SPENDWISE_KEY_PASSWORD.
+def signingProps = new Properties()
+def localPropsFile = rootProject.file('local.properties')
+if (localPropsFile.exists()) {
+    localPropsFile.withInputStream { signingProps.load(it) }
+}
+def signingValue = { String key -> System.getenv(key) ?: signingProps.getProperty(key) }
+
+android {
+    namespace 'com.spendwise.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.spendwise.app"
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release {
+            def storePass = signingValue('SPENDWISE_STORE_PASSWORD')
+            if (storePass) {
+                storeFile file(signingValue('SPENDWISE_STORE_FILE') ?: 'spendwise_release.jks')
+                storePassword storePass
+                keyAlias signingValue('SPENDWISE_KEY_ALIAS') ?: 'spendwise_key'
+                keyPassword signingValue('SPENDWISE_KEY_PASSWORD') ?: storePass
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            // Only sign when the secrets are available; otherwise the release build is unsigned
+            if (signingConfigs.release.storePassword) {
+                signingConfig signingConfigs.release
+            }
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    // Core
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    // Navigation
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.6'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.6'
+
+    // Lifecycle
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
+
+    // Room Database
+    implementation 'androidx.room:room-runtime:2.6.1'
+    implementation 'androidx.room:room-ktx:2.6.1'
+    ksp 'androidx.room:room-compiler:2.6.1'
+
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
+
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:34.11.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+
+    // Charts + Animations
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.airbnb.android:lottie:6.3.0'
+
+    // Activity & Fragment KTX
+    implementation 'androidx.activity:activity-ktx:1.8.2'
+    implementation 'androidx.fragment:fragment-ktx:1.6.2'
+
+    // Security
+    implementation 'org.mindrot:jbcrypt:0.4'
+
+    // Testing
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
