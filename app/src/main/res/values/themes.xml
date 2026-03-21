@@ -1,0 +1,91 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme -->
+    <style name="Theme.SpendWise" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Primary -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <!-- Secondary -->
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <!-- Error -->
+        <item name="colorError">@color/colorError</item>
+        <item name="colorOnError">@color/colorOnError</item>
+        <!-- Background -->
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="colorOnBackground">@color/colorOnBackground</item>
+        <!-- Surface -->
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="colorOnSurface">@color/colorOnSurface</item>
+        <!-- Status Bar -->
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:navigationBarColor">@color/colorBackground</item>
+        <!-- Window -->
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+    </style>
+
+    <!-- Toolbar style -->
+    <style name="Theme.SpendWise.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="titleTextColor">@color/colorOnPrimary</item>
+        <item name="navigationIconTint">@color/colorOnPrimary</item>
+    </style>
+
+    <!-- Card style -->
+    <style name="Theme.SpendWise.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="contentPaddingTop">16dp</item>
+        <item name="contentPaddingBottom">16dp</item>
+        <item name="contentPaddingLeft">16dp</item>
+        <item name="contentPaddingRight">16dp</item>
+    </style>
+
+    <!-- Button styles -->
+    <style name="Theme.SpendWise.Button" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorOnPrimary</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
+
+    <style name="Theme.SpendWise.OutlinedButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
+
+    <!-- Text Input style -->
+    <style name="Theme.SpendWise.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/colorPrimary</item>
+        <item name="hintTextColor">@color/colorPrimary</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+    </style>
+
+    <!-- Bottom Sheet style -->
+    <style name="Theme.SpendWise.BottomSheet" parent="Theme.Material3.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Theme.SpendWise.BottomSheetModal</item>
+    </style>
+    <style name="Theme.SpendWise.BottomSheetModal" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.SpendWise.BottomSheet</item>
+    </style>
+    <style name="ShapeAppearance.SpendWise.BottomSheet" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">20dp</item>
+        <item name="cornerSizeTopRight">20dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <!-- Splash theme -->
+    <style name="Theme.SpendWise.Splash" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:colorBackground">@color/colorPrimary</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+</resources>
