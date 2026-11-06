@@ -68,10 +68,6 @@ class LoginFragment : Fragment() {
         binding.tvRegister.setOnClickListener {
             findNavController().navigate(R.id.action_login_to_register)
         }
-
-        binding.btnGoogleSignIn.setOnClickListener {
-            binding.root.snackbar("Google Sign-In is disabled. Please use email/password.")
-        }
     }
 
     private fun setupObservers() {

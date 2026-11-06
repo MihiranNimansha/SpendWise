@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.devtools.ksp'
-    id 'com.google.gms.google-services'
 }
 
 // Release-signing secrets are read from environment variables or local.properties
@@ -93,12 +92,6 @@ dependencies {
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
-
-    // Firebase
-    implementation platform('com.google.firebase:firebase-bom:34.11.0')
-    implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-auth'
-    implementation 'com.google.android.gms:play-services-auth:20.7.0'
 
     // Charts + Animations
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
