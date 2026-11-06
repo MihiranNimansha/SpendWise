@@ -90,10 +90,11 @@ fun Long.toFormattedDateTime(): String {
 // ----- Date Range Utilities -----
 
 /**
- * Get the start of the current month as a Unix timestamp (midnight, 1st of month)
+ * First millisecond (00:00:00.000 on the 1st) of the month that contains [timeMillis].
  */
-fun getCurrentMonthStart(): Long {
+fun monthStartOf(timeMillis: Long): Long {
     val calendar = Calendar.getInstance()
+    calendar.timeInMillis = timeMillis
     calendar.set(Calendar.DAY_OF_MONTH, 1)
     calendar.set(Calendar.HOUR_OF_DAY, 0)
     calendar.set(Calendar.MINUTE, 0)
@@ -103,10 +104,11 @@ fun getCurrentMonthStart(): Long {
 }
 
 /**
- * Get the end of the current month as a Unix timestamp (last millisecond of last day)
+ * Last millisecond (23:59:59.999 on the last day) of the month that contains [timeMillis].
  */
-fun getCurrentMonthEnd(): Long {
+fun monthEndOf(timeMillis: Long): Long {
     val calendar = Calendar.getInstance()
+    calendar.timeInMillis = timeMillis
     calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
     calendar.set(Calendar.HOUR_OF_DAY, 23)
     calendar.set(Calendar.MINUTE, 59)
@@ -114,6 +116,16 @@ fun getCurrentMonthEnd(): Long {
     calendar.set(Calendar.MILLISECOND, 999)
     return calendar.timeInMillis
 }
+
+/**
+ * Get the start of the current month as a Unix timestamp (midnight, 1st of month)
+ */
+fun getCurrentMonthStart(): Long = monthStartOf(System.currentTimeMillis())
+
+/**
+ * Get the end of the current month as a Unix timestamp (last millisecond of last day)
+ */
+fun getCurrentMonthEnd(): Long = monthEndOf(System.currentTimeMillis())
 
 /**
  * Get the start of the previous month
