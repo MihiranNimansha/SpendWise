@@ -94,7 +94,8 @@ class RegisterFragment : Fragment() {
             binding.btnRegister.text = if (isLoading) "" else getString(R.string.register)
         }
 
-        authViewModel.authState.observe(viewLifecycleOwner) { result ->
+        authViewModel.authState.observe(viewLifecycleOwner) { event ->
+            val result = event.getContentIfNotHandled() ?: return@observe
             result.onSuccess { user ->
                 val bundle = Bundle().apply {
                     putString("registeredEmail", user.email)

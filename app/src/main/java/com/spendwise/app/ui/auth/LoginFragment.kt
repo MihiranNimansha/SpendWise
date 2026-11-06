@@ -81,7 +81,8 @@ class LoginFragment : Fragment() {
             binding.btnSignIn.text = if (isLoading) "Authenticating..." else getString(R.string.sign_in)
         }
 
-        authViewModel.authState.observe(viewLifecycleOwner) { result ->
+        authViewModel.authState.observe(viewLifecycleOwner) { event ->
+            val result = event.getContentIfNotHandled() ?: return@observe
             result.onSuccess { user ->
                 failedAttempts = 0
                 userPreferences.userEmail = user.email
