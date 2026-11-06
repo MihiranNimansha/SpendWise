@@ -1,0 +1,15 @@
+# Secrets - never commit
+local.properties
+*.jks
+*.keystore
+
+# Build output / tooling
+build/
+app/build/
+.gradle/
+.kotlin/
+.idea/
+.DS_Store
+
+# Local safety backup made before the 2026-11-06 fixes
+.backup_original_*/
