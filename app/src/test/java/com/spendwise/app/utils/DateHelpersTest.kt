@@ -2,6 +2,7 @@ package com.spendwise.app.utils
 
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.time.Instant
@@ -53,7 +54,7 @@ class DateHelpersTest {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Colombo"))
         val now = millis("Asia/Colombo", 2026, 11, 6, 9)
         val laterThisMonth = millis("Asia/Colombo", 2026, 11, 20, 18)
-        assert(laterThisMonth in monthStartOf(now)..monthEndOf(now))
+        assertTrue(laterThisMonth in monthStartOf(now)..monthEndOf(now))
     }
 
     @Test
