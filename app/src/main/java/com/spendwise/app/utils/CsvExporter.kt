@@ -19,32 +19,31 @@ object CsvExporter {
             }.csv"
 
             val file = File(context.getExternalFilesDir(null), fileName)
-            val writer = FileWriter(file)
-
-            // Write CSV header
-            writer.append("ID,Title,Amount ($currency),Category,Date,Note\n")
-
-            // Write each expense row
             val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-            expenses.forEach { expense ->
-                writer.append("${expense.id},")
-                writer.append("\"${expense.title.replace("\"", "''")}\",")
-                writer.append("${expense.amount},")
-                writer.append("${expense.category},")
-                writer.append("${sdf.format(Date(expense.date))},")
-                writer.append("\"${expense.note.replace("\"", "''")}\"\n")
+
+            // use{} closes the file even if writing fails
+            FileWriter(file).use { writer ->
+                // Write CSV header
+                writer.append("ID,Title,Amount ($currency),Category,Date,Note\n")
+
+                // Write each expense row (a double quote inside a quoted CSV field is written as "")
+                expenses.forEach { expense ->
+                    writer.append("${expense.id},")
+                    writer.append("\"${expense.title.replace("\"", "\"\"")}\",")
+                    writer.append("${expense.amount},")
+                    writer.append("${expense.category},")
+                    writer.append("${sdf.format(Date(expense.date))},")
+                    writer.append("\"${expense.note.replace("\"", "\"\"")}\"\n")
+                }
+
+                // Write summary at bottom
+                writer.append("\n")
+                writer.append("SUMMARY\n")
+                writer.append("Total Expenses,${expenses.size}\n")
+                writer.append("Total Amount,$currency ${expenses.sumOf { it.amount }}\n")
+                writer.append("Export Date,${sdf.format(Date())}\n")
+                writer.append("Exported By,SpendWise App v1.0\n")
             }
-
-            // Write summary at bottom
-            writer.append("\n")
-            writer.append("SUMMARY\n")
-            writer.append("Total Expenses,${expenses.size}\n")
-            writer.append("Total Amount,$currency ${expenses.sumOf { it.amount }}\n")
-            writer.append("Export Date,${sdf.format(Date())}\n")
-            writer.append("Exported By,SpendWise App v1.0\n")
-
-            writer.flush()
-            writer.close()
 
             // Return URI via FileProvider
             FileProvider.getUriForFile(
