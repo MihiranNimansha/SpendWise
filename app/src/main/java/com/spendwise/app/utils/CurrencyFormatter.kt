@@ -48,7 +48,8 @@ object CurrencyFormatter {
      * Parse a formatted currency string back to Double (removes symbol/commas)
      */
     fun parse(formatted: String): Double {
-        val cleaned = formatted.replace(Regex("[^0-9.]"), "")
+        // The "Rs." symbol leaves a stray leading dot once the letters are stripped; drop it
+        val cleaned = formatted.replace(Regex("[^0-9.]"), "").trimStart('.')
         return cleaned.toDoubleOrNull() ?: 0.0
     }
 }
