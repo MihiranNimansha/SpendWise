@@ -59,7 +59,22 @@ class UserPreferences(context: Context) {
         set(value) = prefs.edit().putLong(Constants.KEY_LAST_LOGIN, value).apply()
 
     /**
-     * Clear all preferences — call on sign-out
+     * Forget everything about the signed-in user but keep device-level choices
+     * (dark mode, "onboarding already shown", notifications). Call on sign-out / account deletion.
+     */
+    fun clearSession() {
+        prefs.edit()
+            .remove(Constants.KEY_USER_NAME)
+            .remove(Constants.KEY_USER_EMAIL)
+            .remove(Constants.KEY_CURRENCY)
+            .remove(Constants.KEY_MONTHLY_BUDGET)
+            .remove(Constants.KEY_IS_LOGGED_IN)
+            .remove(Constants.KEY_LAST_LOGIN)
+            .apply()
+    }
+
+    /**
+     * Clear ALL preferences, including device-level choices. Prefer [clearSession] for sign-out.
      */
     fun clearAll() {
         prefs.edit().clear().apply()

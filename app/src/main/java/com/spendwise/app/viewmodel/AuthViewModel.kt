@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.spendwise.app.data.local.AppDatabase
 import com.spendwise.app.data.local.entity.User
 import com.spendwise.app.data.preferences.UserPreferences
+import com.spendwise.app.utils.Event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,8 +21,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val budgetGoalDao = AppDatabase.getDatabase(application).budgetGoalDao()
     private val userPreferences = UserPreferences(application)
 
-    private val _authState = MutableLiveData<Result<User>>()
-    val authState: LiveData<Result<User>> = _authState
+    private val _authState = MutableLiveData<Event<Result<User>>>()
+    /** Result of the latest sign-in / register attempt. Each result is delivered once (see [Event]). */
+    val authState: LiveData<Event<Result<User>>> = _authState
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -34,14 +36,14 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     userDao.getUserByEmail(email.lowercase().trim())
                 }
                 if (user != null && BCrypt.checkpw(pass, user.passwordHash)) {
-                    _authState.value = Result.success(user)
+                    _authState.value = Event(Result.success(user))
                 } else if (user == null) {
-                    _authState.value = Result.failure(Exception("No account found with this email"))
+                    _authState.value = Event(Result.failure(Exception("No account found with this email")))
                 } else {
-                    _authState.value = Result.failure(Exception("Incorrect password. Please try again."))
+                    _authState.value = Event(Result.failure(Exception("Incorrect password. Please try again.")))
                 }
             } catch (e: Exception) {
-                _authState.value = Result.failure(e)
+                _authState.value = Event(Result.failure(e))
             } finally {
                 _isLoading.value = false
             }
@@ -57,7 +59,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     userDao.getUserByEmail(lowercaseEmail)
                 }
                 if (existingUser != null) {
-                    _authState.value = Result.failure(Exception("User already exists"))
+                    _authState.value = Event(Result.failure(Exception("User already exists")))
                 } else {
                     val hashedPassword = withContext(Dispatchers.IO) {
                         BCrypt.hashpw(pass, BCrypt.gensalt())
@@ -72,10 +74,10 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     withContext(Dispatchers.IO) {
                         userDao.insertUser(newUser)
                     }
-                    _authState.value = Result.success(newUser)
+                    _authState.value = Event(Result.success(newUser))
                 }
             } catch (e: Exception) {
-                _authState.value = Result.failure(e)
+                _authState.value = Event(Result.failure(e))
             } finally {
                 _isLoading.value = false
             }
@@ -140,13 +142,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     budgetGoalDao.deleteAllGoalsForUser(email)
                     userDao.deleteUser(it)
                 }
-                userPreferences.clearAll()
+                userPreferences.clearSession()
             }
             onDone()
         }
     }
 
     fun signOut() {
-        userPreferences.clearAll()
+        userPreferences.clearSession()
     }
 }

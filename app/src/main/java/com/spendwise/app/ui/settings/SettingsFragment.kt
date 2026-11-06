@@ -108,7 +108,7 @@ class SettingsFragment : Fragment() {
             binding.root.snackbar(msg)
         }
 
-        binding.rowChangePassword.setOnClickListener { showChangePasswordDialog() }
+        binding.rowChangePassword.setOnClickListener { openChangePassword() }
 
         binding.rowExportData.setOnClickListener { showExportDataDialog() }
 
@@ -210,12 +210,9 @@ class SettingsFragment : Fragment() {
             .show()
     }
 
-    private fun showChangePasswordDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.change_password))
-            .setMessage("Password reset is currently disabled in Room Auth mode.")
-            .setPositiveButton("OK", null)
-            .show()
+    /** Changing the password is fully supported on the Profile screen, so send the user there. */
+    private fun openChangePassword() {
+        findNavController().navigate(R.id.profileFragment)
     }
 
     private fun showExportDataDialog() {

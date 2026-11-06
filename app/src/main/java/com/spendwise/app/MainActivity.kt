@@ -139,12 +139,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Ends the current user's session: clears saved preferences AND every cached ViewModel
+     * Ends the current user's session: clears the user's saved preferences (dark mode, notification
+     * and onboarding choices are kept) AND every cached ViewModel
      * (expenses, budgets, last auth result) so the next user never sees the previous user's data
      * and the login screen can't replay the previous successful login.
      */
     fun resetSession() {
-        userPrefs.clearAll()
+        userPrefs.clearSession()
         viewModelStore.clear()
     }
 
