@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.spendwise.app.R
 import com.spendwise.app.data.model.CategoryGoalItem
 import com.spendwise.app.databinding.ItemCategoryGoalBinding
+import com.spendwise.app.utils.CategoryStyles
 import com.spendwise.app.utils.CurrencyFormatter
 import kotlin.math.roundToInt
 
@@ -22,16 +23,6 @@ class CategoryGoalAdapter(
 
     var onEditClick: ((CategoryGoalItem) -> Unit)? = null
 
-    private val categoryToEmoji = mapOf(
-        "Food" to "🍔", "Transport" to "🚗", "Fun" to "🎉", 
-        "Health" to "💊", "Bills" to "⚡", "Shopping" to "🛍️", "Other" to "💰"
-    )
-
-    private val categoryToColor = mapOf(
-        "Food" to "#FFF3E0", "Transport" to "#E3F2FD", "Fun" to "#F3E5F5", 
-        "Health" to "#E8F5E9", "Bills" to "#FFF8E1", "Shopping" to "#FCE4EC", "Other" to "#EFEBE9"
-    )
-    
     // Explicit bold tracking colors for indicators
     private val indicatorColors = mapOf(
         "green" to "#4CAF50",
@@ -59,9 +50,9 @@ class CategoryGoalAdapter(
         }
 
         fun bind(item: CategoryGoalItem, position: Int) {
-            val emoji = categoryToEmoji[item.category] ?: "💰"
-            val bgColorHex = categoryToColor[item.category] ?: "#EFEBE9"
-            val parsedBgColor = Color.parseColor(bgColorHex)
+            val style = CategoryStyles.of(item.category)
+            val emoji = style.emoji
+            val parsedBgColor = style.pastelColor
 
             binding.tvCategoryName.text = item.category
             binding.tvCategoryEmoji.text = emoji

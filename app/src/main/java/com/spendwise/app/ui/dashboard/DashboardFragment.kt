@@ -21,6 +21,8 @@ import com.spendwise.app.R
 import com.spendwise.app.data.local.entity.Expense
 import com.spendwise.app.data.preferences.UserPreferences
 import com.spendwise.app.databinding.FragmentDashboardBinding
+import com.spendwise.app.utils.CategoryStyles
+import com.spendwise.app.utils.Constants
 import com.spendwise.app.utils.CurrencyFormatter
 import com.spendwise.app.utils.hide
 import com.spendwise.app.utils.show
@@ -206,29 +208,20 @@ class DashboardFragment : Fragment() {
 
     private fun updateCategoryCards(categoryMap: Map<String, Double>, currency: String) {
         binding.layoutCategories.removeAllViews()
-        val categories = listOf(
-            Triple("Food", "🍔", "#E8F5E9"),
-            Triple("Transport", "🚗", "#E3F2FD"),
-            Triple("Fun", "🎉", "#FFF3E0"),
-            Triple("Health", "💊", "#FFEBEE"),
-            Triple("Bills", "⚡", "#F3E5F5"),
-            Triple("Shopping", "🛍️", "#FCE4EC"),
-            Triple("Other", "💰", "#ECEFF1")
-        )
-
-        categories.forEach { (name, emoji, colorHex) ->
+        Constants.CATEGORIES.forEach { name ->
+            val style = CategoryStyles.of(name)
             val amount = categoryMap[name] ?: 0.0
             val cardView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.item_category_summary, binding.layoutCategories, false) as MaterialCardView
 
-            cardView.setCardBackgroundColor(android.graphics.Color.parseColor(if (amount > 0) colorHex else "#F5F5F5"))
+            cardView.setCardBackgroundColor(if (amount > 0) style.pastelColor else android.graphics.Color.parseColor("#F5F5F5"))
             if (amount == 0.0) cardView.alpha = 0.5f
 
             val tvEmoji = cardView.findViewById<TextView>(R.id.tvCatEmoji)
             val tvName = cardView.findViewById<TextView>(R.id.tvCatName)
             val tvAmount = cardView.findViewById<TextView>(R.id.tvCatAmount)
 
-            tvEmoji.text = emoji
+            tvEmoji.text = style.emoji
             tvName.text = name
             tvAmount.text = CurrencyFormatter.formatShort(amount, currency)
 
