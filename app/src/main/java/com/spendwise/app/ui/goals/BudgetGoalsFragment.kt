@@ -246,6 +246,12 @@ class BudgetGoalsFragment : Fragment() {
         sheet.show(parentFragmentManager, "AddGoalSheet")
     }
 
+    override fun onResume() {
+        super.onResume()
+        expenseViewModel.refreshMonth()
+        budgetViewModel.refreshMonth()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

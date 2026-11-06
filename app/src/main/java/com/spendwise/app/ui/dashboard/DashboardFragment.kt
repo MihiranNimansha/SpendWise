@@ -42,6 +42,9 @@ class DashboardFragment : Fragment() {
     private lateinit var userPreferences: UserPreferences
     private lateinit var recentExpenseAdapter: RecentExpenseAdapter
 
+    private var latestSpent: Double? = null
+    private var latestBudget: Double? = null
+
     private var panicShownThisSession = false
     private var isPanicActive = false
     private var tapCount = 0
@@ -122,14 +125,16 @@ class DashboardFragment : Fragment() {
     private fun setupObservers() {
         val currency = userPreferences.preferredCurrency
 
-        // Budget Progress
+        // Budget progress: two independent observers feeding one UI update. (Observing the budget
+        // inside the spent observer added a new observer on every emission, leaking observers and
+        // re-running the progress animation several times.)
         expenseViewModel.totalSpentThisMonth.observe(viewLifecycleOwner) { spent ->
-            val totalSpent = spent ?: 0.0
-            
-            budgetViewModel.totalMonthlyBudget.observe(viewLifecycleOwner) { budget ->
-                val totalBudget = budget ?: userPreferences.monthlyBudget
-                updateBudgetUI(totalSpent, totalBudget, currency)
-            }
+            latestSpent = spent ?: 0.0
+            refreshBudgetUI(currency)
+        }
+        budgetViewModel.totalMonthlyBudget.observe(viewLifecycleOwner) { budget ->
+            latestBudget = budget ?: userPreferences.monthlyBudget
+            refreshBudgetUI(currency)
         }
 
         // Recent Expenses
@@ -160,6 +165,20 @@ class DashboardFragment : Fragment() {
                 showPanicAlert()
             }
         }
+    }
+
+    private fun refreshBudgetUI(currency: String) {
+        val spent = latestSpent ?: return
+        val budget = latestBudget ?: return
+        updateBudgetUI(spent, budget, currency)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Roll the month totals over if the date changed while the app was in the background
+        expenseViewModel.refreshMonth()
+        budgetViewModel.refreshMonth()
+        binding.tvMonthYear.text = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(Date())
     }
 
     private fun updateBudgetUI(spent: Double, budget: Double, currency: String) {

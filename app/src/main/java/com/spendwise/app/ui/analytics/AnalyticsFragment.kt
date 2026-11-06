@@ -119,6 +119,11 @@ class AnalyticsFragment : Fragment() {
         binding.pieChart.animateY(1400)
     }
 
+    override fun onResume() {
+        super.onResume()
+        expenseViewModel.refreshMonth()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
