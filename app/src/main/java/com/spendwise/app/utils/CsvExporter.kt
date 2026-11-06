@@ -6,7 +6,6 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import com.spendwise.app.data.local.entity.Expense
 import java.io.File
-import java.io.FileWriter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -19,31 +18,7 @@ object CsvExporter {
             }.csv"
 
             val file = File(context.getExternalFilesDir(null), fileName)
-            val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-
-            // use{} closes the file even if writing fails
-            FileWriter(file).use { writer ->
-                // Write CSV header
-                writer.append("ID,Title,Amount ($currency),Category,Date,Note\n")
-
-                // Write each expense row (a double quote inside a quoted CSV field is written as "")
-                expenses.forEach { expense ->
-                    writer.append("${expense.id},")
-                    writer.append("\"${expense.title.replace("\"", "\"\"")}\",")
-                    writer.append("${expense.amount},")
-                    writer.append("${expense.category},")
-                    writer.append("${sdf.format(Date(expense.date))},")
-                    writer.append("\"${expense.note.replace("\"", "\"\"")}\"\n")
-                }
-
-                // Write summary at bottom
-                writer.append("\n")
-                writer.append("SUMMARY\n")
-                writer.append("Total Expenses,${expenses.size}\n")
-                writer.append("Total Amount,$currency ${expenses.sumOf { it.amount }}\n")
-                writer.append("Export Date,${sdf.format(Date())}\n")
-                writer.append("Exported By,SpendWise App v1.0\n")
-            }
+            file.writeText(buildCsv(expenses, currency), Charsets.UTF_8)
 
             // Return URI via FileProvider
             FileProvider.getUriForFile(
@@ -55,6 +30,48 @@ object CsvExporter {
             e.printStackTrace()
             null
         }
+    }
+
+    /**
+     * Builds the whole CSV document (header, one row per expense, summary) as a string.
+     * Pure function, so it can be unit-tested without a device.
+     */
+    fun buildCsv(
+        expenses: List<Expense>,
+        currency: String,
+        exportedOn: Date = Date(),
+        locale: Locale = Locale.getDefault()
+    ): String {
+        val sdf = SimpleDateFormat("dd MMM yyyy", locale)
+        val csv = StringBuilder()
+
+        csv.append("ID,Title,Amount ($currency),Category,Date,Note\n")
+        expenses.forEach { expense ->
+            csv.append("${expense.id},")
+            csv.append(quote(expense.title)).append(',')
+            csv.append("${expense.amount},")
+            csv.append("${expense.category},")
+            csv.append("${sdf.format(Date(expense.date))},")
+            csv.append(quote(expense.note)).append('\n')
+        }
+
+        csv.append("\n")
+        csv.append("SUMMARY\n")
+        csv.append("Total Expenses,${expenses.size}\n")
+        csv.append("Total Amount,$currency ${expenses.sumOf { it.amount }}\n")
+        csv.append("Export Date,${sdf.format(exportedOn)}\n")
+        csv.append("Exported By,SpendWise App v1.0\n")
+        return csv.toString()
+    }
+
+    /**
+     * Wraps free text in quotes for CSV (a quote inside becomes two quotes). Text that starts with
+     * = + - @ is prefixed with an apostrophe so spreadsheet apps show it as text instead of
+     * running it as a formula ("CSV injection").
+     */
+    internal fun quote(value: String): String {
+        val safe = if (value.isNotEmpty() && value[0] in "=+-@\t\r") "'$value" else value
+        return "\"" + safe.replace("\"", "\"\"") + "\""
     }
 
     fun shareCSV(context: Context, uri: Uri) {
