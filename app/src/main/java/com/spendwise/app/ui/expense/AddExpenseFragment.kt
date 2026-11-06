@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -17,6 +18,7 @@ import com.spendwise.app.data.preferences.UserPreferences
 import com.spendwise.app.databinding.FragmentAddExpenseBinding
 import com.spendwise.app.utils.CurrencyFormatter
 import com.spendwise.app.utils.snackbar
+import com.spendwise.app.utils.Constants
 import com.spendwise.app.utils.datePickerSelectionToLocalMillis
 import com.spendwise.app.utils.localMillisToDatePickerSelection
 import com.spendwise.app.viewmodel.ExpenseViewModel
@@ -62,8 +64,7 @@ class AddExpenseFragment : Fragment() {
 
     private fun setupViews() {
         // Categories
-        val categories = arrayOf("Food", "Transport", "Fun", "Health", "Bills", "Shopping", "Other")
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, categories)
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, Constants.CATEGORIES)
         binding.actvCategory.setAdapter(adapter)
 
         updateDateDisplay()
@@ -74,6 +75,11 @@ class AddExpenseFragment : Fragment() {
         binding.toolbarAddExpense.setNavigationOnClickListener { findNavController().navigateUp() }
 
         binding.etDate.setOnClickListener { showDatePicker() }
+
+        // Clear a field's error as soon as the user starts fixing it
+        binding.etTitle.doAfterTextChanged { binding.tilTitle.error = null }
+        binding.etAmount.doAfterTextChanged { binding.etAmount.error = null }
+        binding.actvCategory.doAfterTextChanged { binding.tilCategory.error = null }
 
         binding.btnSaveExpense.setOnClickListener {
             if (validateInputs()) {
@@ -128,24 +134,27 @@ class AddExpenseFragment : Fragment() {
     }
 
     private fun validateInputs(): Boolean {
-        var isValid = true
-        if (binding.etTitle.text.toString().trim().isEmpty()) {
-            binding.tilTitle.error = "Title is required"
-            isValid = false
-        } else binding.tilTitle.error = null
+        var firstInvalid: View? = null
 
         val amount = binding.etAmount.text.toString().toDoubleOrNull()
         if (amount == null || amount <= 0) {
-            binding.root.snackbar("Enter a valid amount")
-            isValid = false
+            binding.etAmount.error = getString(R.string.error_invalid_amount)
+            firstInvalid = binding.etAmount
         }
 
-        if (binding.actvCategory.text.toString().isEmpty()) {
-            binding.tilCategory.error = "Category is required"
-            isValid = false
+        if (binding.etTitle.text.toString().trim().isEmpty()) {
+            binding.tilTitle.error = getString(R.string.error_title_required)
+            if (firstInvalid == null) firstInvalid = binding.etTitle
+        } else binding.tilTitle.error = null
+
+        // Only the listed categories are valid (the field is a dropdown but still editable text)
+        if (binding.actvCategory.text.toString() !in Constants.CATEGORIES) {
+            binding.tilCategory.error = getString(R.string.error_category_required)
+            if (firstInvalid == null) firstInvalid = binding.actvCategory
         } else binding.tilCategory.error = null
 
-        return isValid
+        firstInvalid?.requestFocus()
+        return firstInvalid == null
     }
 
     private fun saveExpense() {

@@ -102,6 +102,8 @@
     <string name="error_invalid_email">Please enter a valid email</string>
     <string name="error_password_mismatch">Passwords do not match</string>
     <string name="error_invalid_amount">Please enter a valid amount</string>
+    <string name="error_title_required">Title is required</string>
+    <string name="error_category_required">Please choose a category</string>
     <string name="error_auth_failed">Authentication failed. Please try again.</string>
     <string name="error_network">No internet connection. Please try again.</string>
 
