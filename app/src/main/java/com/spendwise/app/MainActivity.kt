@@ -98,9 +98,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_settings -> navController.navigate(R.id.settingsFragment)
                 R.id.nav_logout -> {
                     MaterialAlertDialogBuilder(this)
-                        .setTitle("Sign Out")
-                        .setMessage("Are you sure?")
-                        .setPositiveButton("Sign Out") { _, _ ->
+                        .setTitle(R.string.sign_out)
+                        .setMessage(R.string.sign_out_confirm)
+                        .setPositiveButton(R.string.sign_out) { _, _ ->
                             resetSession()
                             navController.navigate(
                                 R.id.loginFragment,
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
                                 NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build()
                             )
                         }
-                        .setNegativeButton("Cancel", null)
+                        .setNegativeButton(R.string.cancel, null)
                         .show()
                 }
             }

@@ -245,8 +245,11 @@ class ExpenseHistoryFragment : Fragment() {
         val totalAmount = list.sumOf { it.amount }
         val size = list.size
         
-        binding.tvTotalCount.text = "$size expense${if (size != 1) "s" else ""}"
-        binding.tvTotalAmount.text = "Total: ${CurrencyFormatter.format(totalAmount, userPreferences.preferredCurrency)}"
+        binding.tvTotalCount.text = resources.getQuantityString(R.plurals.expenses_count, size, size)
+        binding.tvTotalAmount.text = getString(
+            R.string.history_total,
+            CurrencyFormatter.format(totalAmount, userPreferences.preferredCurrency)
+        )
     }
 
     private fun hideKeyboard() {

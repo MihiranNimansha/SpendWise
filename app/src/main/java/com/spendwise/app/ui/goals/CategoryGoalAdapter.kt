@@ -62,14 +62,14 @@ class CategoryGoalAdapter(
             binding.progressCategory.setIndicatorColor(stateList.defaultColor) // Fallback default
 
             if (!item.hasGoal || item.monthlyLimit <= 0.0) {
-                binding.tvCategorySpent.text = "No limit set"
+                binding.tvCategorySpent.text = binding.root.context.getString(R.string.goal_no_limit)
                 binding.tvCategoryPercent.text = "0%"
                 binding.progressCategory.progress = 0
                 binding.tvCategoryPercent.setTextColor(ContextCompat.getColor(binding.root.context, R.color.colorTextSecondary))
             } else {
                 val spentFormatted = CurrencyFormatter.format(item.spent, currency)
                 val limitFormatted = CurrencyFormatter.format(item.monthlyLimit, currency)
-                binding.tvCategorySpent.text = "$spentFormatted spent of $limitFormatted limit"
+                binding.tvCategorySpent.text = binding.root.context.getString(R.string.goal_spent_of_limit, spentFormatted, limitFormatted)
                 
                 var percent = ((item.spent / item.monthlyLimit) * 100).roundToInt()
                 if (percent < 0) percent = 0

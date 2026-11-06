@@ -74,13 +74,13 @@ class DashboardFragment : Fragment() {
 
     private fun setupGreetingAndDate() {
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        val greeting = when {
-            hour < 12 -> "Good Morning"
-            hour < 17 -> "Good Afternoon"
-            else -> "Good Evening"
+        val greetingRes = when {
+            hour < 12 -> R.string.greeting_morning
+            hour < 17 -> R.string.greeting_afternoon
+            else -> R.string.greeting_evening
         }
-        val name = userPreferences.userName.ifEmpty { "User" }
-        binding.tvGreeting.text = "$greeting, $name! 👋"
+        val name = userPreferences.userName.ifEmpty { getString(R.string.default_user_name) }
+        binding.tvGreeting.text = getString(greetingRes, name)
 
         val sdf = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
         binding.tvMonthYear.text = sdf.format(Date())
@@ -186,11 +186,11 @@ class DashboardFragment : Fragment() {
     private fun updateBudgetUI(spent: Double, budget: Double, currency: String) {
         binding.tvTotalSpent.text = CurrencyFormatter.format(spent, currency)
         val left = budget - spent
-        binding.tvBudgetLeft.text = if (left >= 0) CurrencyFormatter.format(left, currency) else "Overbudget"
+        binding.tvBudgetLeft.text = if (left >= 0) CurrencyFormatter.format(left, currency) else getString(R.string.budget_overbudget)
 
         if (budget > 0) {
             val percent = ((spent / budget) * 100).toInt()
-            binding.tvBudgetPercent.text = "${percent.coerceAtMost(100)}% of budget used"
+            binding.tvBudgetPercent.text = getString(R.string.budget_percent_of_budget_used, percent.coerceAtMost(100))
 
             ObjectAnimator.ofInt(binding.progressBudget, "progress", 0, percent.coerceAtMost(100)).apply {
                 duration = 1000
@@ -240,7 +240,11 @@ class DashboardFragment : Fragment() {
         val spent = expenseViewModel.totalSpentThisMonth.value ?: 0.0
         val budget = budgetViewModel.totalMonthlyBudget.value ?: userPreferences.monthlyBudget
         val currency = userPreferences.preferredCurrency
-        binding.tvPanicAmount.text = "${CurrencyFormatter.format(spent, currency)} spent of ${CurrencyFormatter.format(budget, currency)} budget"
+        binding.tvPanicAmount.text = getString(
+            R.string.budget_panic_amount,
+            CurrencyFormatter.format(spent, currency),
+            CurrencyFormatter.format(budget, currency)
+        )
 
         // Pulse warning
         ObjectAnimator.ofFloat(binding.lottieWarning, "scaleX", 1.0f, 1.1f, 1.0f).apply {
