@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.spendwise.app.data.local.entity.Expense
 import com.spendwise.app.databinding.ItemRecentExpenseBinding
+import com.spendwise.app.utils.CategoryStyles
 import com.spendwise.app.utils.CurrencyFormatter
 import com.spendwise.app.utils.toFormattedDate
 
@@ -38,15 +39,7 @@ class RecentExpenseAdapter(
             binding.tvExpenseDate.text = expense.date.toFormattedDate()
             binding.tvExpenseAmount.text = "-${CurrencyFormatter.format(expense.amount, currency)}"
             
-            binding.tvCategoryEmoji.text = when(expense.category) {
-                "Food" -> "🍔"
-                "Transport" -> "🚗"
-                "Fun" -> "🎉"
-                "Health" -> "💊"
-                "Bills" -> "⚡"
-                "Shopping" -> "🛍️"
-                else -> "💰"
-            }
+            binding.tvCategoryEmoji.text = CategoryStyles.of(expense.category).emoji
         }
     }
 }

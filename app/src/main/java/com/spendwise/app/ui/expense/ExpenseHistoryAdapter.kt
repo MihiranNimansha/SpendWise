@@ -1,6 +1,5 @@
 package com.spendwise.app.ui.expense
 
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.spendwise.app.data.local.entity.Expense
 import com.spendwise.app.databinding.ItemExpenseHistoryBinding
+import com.spendwise.app.utils.CategoryStyles
 import com.spendwise.app.utils.CurrencyFormatter
 import com.spendwise.app.utils.hide
 import com.spendwise.app.utils.show
@@ -19,16 +19,6 @@ class ExpenseHistoryAdapter(
 ) : ListAdapter<Expense, ExpenseHistoryAdapter.ExpenseViewHolder>(ExpenseDiffCallback()) {
 
     var onItemClick: ((Expense) -> Unit)? = null
-
-    private val categoryToEmoji = mapOf(
-        "Food" to "🍔", "Transport" to "🚗", "Fun" to "🎉", 
-        "Health" to "💊", "Bills" to "⚡", "Shopping" to "🛍️", "Other" to "💰"
-    )
-
-    private val categoryToColor = mapOf(
-        "Food" to "#FFF3E0", "Transport" to "#E3F2FD", "Fun" to "#F3E5F5", 
-        "Health" to "#E8F5E9", "Bills" to "#FFF8E1", "Shopping" to "#FCE4EC", "Other" to "#EFEBE9"
-    )
 
     fun getExpenseAt(position: Int): Expense = getItem(position)
 
@@ -52,9 +42,9 @@ class ExpenseHistoryAdapter(
         }
 
         fun bind(expense: Expense) {
-            val emoji = categoryToEmoji[expense.category] ?: "💰"
-            val colorHex = categoryToColor[expense.category] ?: "#EFEBE9"
-            val parsedColor = Color.parseColor(colorHex)
+            val style = CategoryStyles.of(expense.category)
+            val emoji = style.emoji
+            val parsedColor = style.pastelColor
 
             binding.tvHistoryTitle.text = expense.title
             binding.tvHistoryDate.text = expense.date.toFormattedDate()

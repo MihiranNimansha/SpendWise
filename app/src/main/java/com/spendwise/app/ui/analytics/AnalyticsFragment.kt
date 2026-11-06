@@ -14,6 +14,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.spendwise.app.MainActivity
 import com.spendwise.app.data.preferences.UserPreferences
 import com.spendwise.app.databinding.FragmentAnalyticsBinding
+import com.spendwise.app.utils.CategoryStyles
 import com.spendwise.app.utils.CurrencyFormatter
 import com.spendwise.app.utils.hide
 import com.spendwise.app.utils.show
@@ -98,15 +99,9 @@ class AnalyticsFragment : Fragment() {
         dataSet.sliceSpace = 3f
         dataSet.selectionShift = 5f
 
-        val colors = ArrayList<Int>()
-        colors.add(Color.parseColor("#4CAF50"))
-        colors.add(Color.parseColor("#2196F3"))
-        colors.add(Color.parseColor("#FF9800"))
-        colors.add(Color.parseColor("#F44336"))
-        colors.add(Color.parseColor("#9C27B0"))
-        colors.add(Color.parseColor("#E91E63"))
-        colors.add(Color.parseColor("#607D8B"))
-        dataSet.colors = colors
+        // One colour per category (the old code handed colours out by position, so a category's
+        // slice changed colour depending on which other categories had spending)
+        dataSet.colors = entries.map { CategoryStyles.of(it.label).chartColor }
 
         val data = PieData(dataSet)
         data.setValueFormatter(PercentFormatter(binding.pieChart))
