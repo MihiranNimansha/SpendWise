@@ -18,10 +18,13 @@ import com.spendwise.app.MainActivity
 import com.spendwise.app.R
 import com.spendwise.app.data.preferences.UserPreferences
 import com.spendwise.app.databinding.FragmentSettingsBinding
+import com.spendwise.app.data.local.entity.Expense
+import com.spendwise.app.utils.CsvExporter
 import com.spendwise.app.utils.CurrencyFormatter
 import com.spendwise.app.utils.snackbar
 import com.spendwise.app.utils.toast
 import com.spendwise.app.viewmodel.AuthViewModel
+import com.spendwise.app.viewmodel.ExpenseViewModel
 
 class SettingsFragment : Fragment() {
 
@@ -29,7 +32,11 @@ class SettingsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val authViewModel: AuthViewModel by activityViewModels()
+    private val expenseViewModel: ExpenseViewModel by activityViewModels()
     private lateinit var userPrefs: UserPreferences
+
+    // LiveData only holds a value while observed, so keep the latest list for the export button
+    private var latestExpenses: List<Expense> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -43,6 +50,8 @@ class SettingsFragment : Fragment() {
         userPrefs = UserPreferences(requireContext())
 
         (activity as? MainActivity)?.showNavigation()
+
+        expenseViewModel.allExpenses.observe(viewLifecycleOwner) { latestExpenses = it }
 
         loadPreferences()
         setupListeners()
@@ -210,10 +219,23 @@ class SettingsFragment : Fragment() {
     }
 
     private fun showExportDataDialog() {
+        val expenses = latestExpenses
+        if (expenses.isEmpty()) {
+            binding.root.snackbar("No expenses to export")
+            return
+        }
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Export Data")
-            .setMessage("Export feature generates a summary of all your expenses. This feature will be available in the next update.")
-            .setPositiveButton("OK", null)
+            .setTitle("Export to CSV")
+            .setMessage("Export ${expenses.size} expenses to a CSV file?")
+            .setPositiveButton("Export") { _, _ ->
+                val uri = CsvExporter.exportExpenses(requireContext(), expenses, userPrefs.preferredCurrency)
+                if (uri != null) {
+                    CsvExporter.shareCSV(requireContext(), uri)
+                } else {
+                    binding.root.snackbar("Export failed")
+                }
+            }
+            .setNegativeButton("Cancel", null)
             .show()
     }
 
@@ -222,8 +244,8 @@ class SettingsFragment : Fragment() {
             .setTitle("Sign Out")
             .setMessage(getString(R.string.sign_out_confirm))
             .setPositiveButton("Sign Out") { _, _ ->
-                // Clear preferences manually
-                userPrefs.clearAll()
+                // Clear saved preferences and all cached per-user ViewModels
+                (requireActivity() as MainActivity).resetSession()
                 
                 // Navigate and clear stack
                 findNavController().navigate(
