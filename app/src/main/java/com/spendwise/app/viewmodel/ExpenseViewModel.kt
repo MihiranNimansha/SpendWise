@@ -3,12 +3,16 @@ package com.spendwise.app.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.spendwise.app.data.local.AppDatabase
 import com.spendwise.app.data.local.entity.Expense
 import com.spendwise.app.data.preferences.UserPreferences
+import com.spendwise.app.utils.getCurrentMonthStart
+import com.spendwise.app.utils.monthEndOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -21,18 +25,26 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
     val allExpenses: LiveData<List<Expense>> = expenseDao.getAllExpensesByUser(currentUserId).asLiveData()
     val recentFiveExpenses: LiveData<List<Expense>> = expenseDao.getRecentExpenses(currentUserId, 5).asLiveData()
 
-    private val calendar = java.util.Calendar.getInstance().apply {
-        set(java.util.Calendar.DAY_OF_MONTH, 1)
-        set(java.util.Calendar.HOUR_OF_DAY, 0)
-        set(java.util.Calendar.MINUTE, 0)
-        set(java.util.Calendar.SECOND, 0)
+    /** First millisecond of the month being shown. Re-evaluated by [refreshMonth]. */
+    private val monthStart = MutableLiveData(getCurrentMonthStart())
+
+    // The range covers the WHOLE calendar month. It used to end at "now" (captured when the
+    // ViewModel was created), which silently dropped expenses dated later that day or later this
+    // month, and it never rolled over when a new month started while the app stayed alive.
+    val totalSpentThisMonth: LiveData<Double> = monthStart.switchMap { start ->
+        expenseDao.getTotalSpentInRange(currentUserId, start, monthEndOf(start)).asLiveData()
     }
-    private val startOfMonth = calendar.timeInMillis
-    
-    val totalSpentThisMonth: LiveData<Double> = expenseDao.getTotalSpentInRange(currentUserId, startOfMonth, System.currentTimeMillis()).asLiveData()
-    
-    val categoryTotalsThisMonth: LiveData<Map<String, Double>> = expenseDao.getSpendingByCategory(currentUserId, startOfMonth, System.currentTimeMillis()).asLiveData().map { list ->
-        list.associate { it.category to it.total }
+
+    val categoryTotalsThisMonth: LiveData<Map<String, Double>> = monthStart.switchMap { start ->
+        expenseDao.getSpendingByCategory(currentUserId, start, monthEndOf(start)).asLiveData().map { list ->
+            list.associate { it.category to it.total }
+        }
+    }
+
+    /** Call when a screen becomes visible so the month totals roll over after midnight on the 1st. */
+    fun refreshMonth() {
+        val current = getCurrentMonthStart()
+        if (monthStart.value != current) monthStart.value = current
     }
 
     fun insertExpense(expense: Expense) {
