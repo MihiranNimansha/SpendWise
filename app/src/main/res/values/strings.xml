@@ -134,4 +134,27 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="change_password">Change Password</string>
     <string name="version_name">SpendWise v1.0</string>
+
+    <!-- Dashboard -->
+    <string name="default_user_name">User</string>
+    <string name="greeting_morning">Good Morning, %1$s! 👋</string>
+    <string name="greeting_afternoon">Good Afternoon, %1$s! 👋</string>
+    <string name="greeting_evening">Good Evening, %1$s! 👋</string>
+    <string name="budget_overbudget">Overbudget</string>
+    <string name="budget_percent_of_budget_used">%1$d%% of budget used</string>
+    <string name="budget_panic_amount">%1$s spent of %2$s budget</string>
+
+    <!-- History -->
+    <plurals name="expenses_count">
+        <item quantity="one">%d expense</item>
+        <item quantity="other">%d expenses</item>
+    </plurals>
+    <string name="history_total">Total: %1$s</string>
+
+    <!-- Goals -->
+    <string name="goals_overall_spent">Spent: %1$s</string>
+    <string name="goals_overall_remaining">Remaining: %1$s</string>
+    <string name="goals_percent_used">%1$d%% used</string>
+    <string name="goal_no_limit">No limit set</string>
+    <string name="goal_spent_of_limit">%1$s spent of %2$s limit</string>
 </resources>

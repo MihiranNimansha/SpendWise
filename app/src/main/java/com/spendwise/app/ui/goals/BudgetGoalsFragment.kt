@@ -120,15 +120,15 @@ class BudgetGoalsFragment : Fragment() {
         val remaining = monthBudget - totalSpent
         val currency = userPreferences.preferredCurrency
 
-        binding.tvOverallSpent.text = "Spent: ${CurrencyFormatter.format(totalSpent, currency)}"
-        binding.tvOverallRemaining.text = "Remaining: ${CurrencyFormatter.format(remaining, currency)}"
+        binding.tvOverallSpent.text = getString(R.string.goals_overall_spent, CurrencyFormatter.format(totalSpent, currency))
+        binding.tvOverallRemaining.text = getString(R.string.goals_overall_remaining, CurrencyFormatter.format(remaining, currency))
         
         var percent = 0
         if (monthBudget > 0) {
             percent = ((totalSpent / monthBudget) * 100).roundToInt()
         }
         
-        binding.tvOverallPercent.text = "$percent% used"
+        binding.tvOverallPercent.text = getString(R.string.goals_percent_used, percent)
 
         val targetProgress = if (percent > 100) 100 else percent
         val statusColor = when {
