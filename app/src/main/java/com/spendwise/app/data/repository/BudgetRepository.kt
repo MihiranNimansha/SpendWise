@@ -30,9 +30,6 @@ class BudgetRepository(private val budgetGoalDao: BudgetGoalDao) {
     suspend fun deleteGoal(goal: BudgetGoal) =
         budgetGoalDao.deleteGoal(goal)
 
-    suspend fun getGoalByCategory(userId: String, category: String, month: Int, year: Int): BudgetGoal? =
-        budgetGoalDao.getGoalByCategory(userId, category, month, year)
-
     suspend fun deleteAllGoalsForUser(userId: String) =
         budgetGoalDao.deleteAllGoalsForUser(userId)
 }

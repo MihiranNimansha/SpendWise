@@ -31,9 +31,6 @@ interface BudgetGoalDao {
     @Query("SELECT SUM(monthlyLimit) FROM budget_goals WHERE userId = :userId AND month = :month AND year = :year")
     fun getTotalBudgetForMonth(userId: String, month: Int, year: Int): Flow<Double?>
 
-    @Query("SELECT * FROM budget_goals WHERE userId = :userId AND category = :category AND month = :month AND year = :year LIMIT 1")
-    suspend fun getGoalByCategory(userId: String, category: String, month: Int, year: Int): BudgetGoal?
-
     /**
      * Get a specific goal by category, month, year, and user
      */
