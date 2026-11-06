@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import androidx.core.widget.doAfterTextChanged
+import com.spendwise.app.R
 import com.spendwise.app.databinding.FragmentAddGoalBottomSheetBinding
+import com.spendwise.app.utils.Constants
 import com.spendwise.app.utils.hide
 import com.spendwise.app.utils.show
-import com.spendwise.app.utils.toast
 
 class AddGoalBottomSheet(
     private val availableCategories: List<String>,
@@ -62,20 +64,26 @@ class AddGoalBottomSheet(
             }
         }
 
+        binding.etLimit.doAfterTextChanged { binding.tilLimit.error = null }
+        binding.actvCategory.doAfterTextChanged { binding.tilCategory.error = null }
+
         binding.btnSaveGoal.setOnClickListener {
-            val limitStr = binding.etLimit.text.toString()
+            val limit = binding.etLimit.text.toString().toDoubleOrNull()
             val category = binding.actvCategory.text.toString()
-            
-            if (limitStr.isEmpty() || limitStr.toDoubleOrNull() == null || limitStr.toDouble() <= 0.0) {
-                requireContext().toast("Please enter a valid amount")
-                return@setOnClickListener
+
+            var valid = true
+            if (category.isEmpty() || category !in Constants.CATEGORIES) {
+                binding.tilCategory.error = getString(R.string.error_category_required)
+                valid = false
             }
-            if (category.isEmpty()) {
-                requireContext().toast("Please select a category")
-                return@setOnClickListener
+            if (limit == null || limit <= 0.0) {
+                binding.tilLimit.error = getString(R.string.error_invalid_amount)
+                binding.etLimit.requestFocus()
+                valid = false
             }
-            
-            onGoalSaved?.invoke(category, limitStr.toDouble())
+            if (!valid) return@setOnClickListener
+
+            onGoalSaved?.invoke(category, limit!!)
             dismiss()
         }
 
