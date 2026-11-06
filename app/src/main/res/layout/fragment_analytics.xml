@@ -21,6 +21,7 @@
 
             <ImageView
                 android:id="@+id/action_date_range"
+                android:contentDescription="@string/cd_date_range"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"

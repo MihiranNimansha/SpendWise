@@ -361,6 +361,7 @@
                             android:text="Export Data (CSV)"
                             android:textColor="@color/colorTextPrimary" />
                         <ImageView
+                            android:importantForAccessibility="no"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@android:drawable/ic_media_next"

@@ -112,6 +112,11 @@
     <string name="cd_app_logo">SpendWise logo</string>
     <string name="cd_menu_icon">Menu</string>
     <string name="cd_back">Back</string>
+    <string name="cd_add_expense">Add expense</string>
+    <string name="cd_add_goal">Add budget goal</string>
+    <string name="cd_edit_goal">Edit budget goal</string>
+    <string name="cd_date_range">Choose date range</string>
+    <string name="cd_budget_warning">Budget warning</string>
 
     <!-- Phase 2 Auth Strings -->
     <string name="sign_in">Sign In</string>

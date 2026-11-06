@@ -92,9 +92,11 @@
 
         <ImageButton
             android:id="@+id/btnEditGoal"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_edit_goal"
+            android:padding="12dp"
             android:src="@android:drawable/ic_menu_edit"
             app:tint="@color/colorTextSecondary"
             app:layout_constraintBottom_toBottomOf="@+id/tvCategorySpent"
