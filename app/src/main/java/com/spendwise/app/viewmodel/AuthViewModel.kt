@@ -142,13 +142,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     budgetGoalDao.deleteAllGoalsForUser(email)
                     userDao.deleteUser(it)
                 }
-                userPreferences.clearAll()
+                userPreferences.clearSession()
             }
             onDone()
         }
     }
 
     fun signOut() {
-        userPreferences.clearAll()
+        userPreferences.clearSession()
     }
 }
