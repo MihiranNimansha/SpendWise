@@ -118,6 +118,36 @@ fun monthEndOf(timeMillis: Long): Long {
 }
 
 /**
+ * MaterialDatePicker works in UTC: it expects and returns "midnight UTC of the chosen day".
+ * Turns a local timestamp into the value to pass to setSelection() so the picker highlights the
+ * same calendar day the user sees (without this, UTC-minus zones show the previous day).
+ */
+fun localMillisToDatePickerSelection(localMillis: Long): Long {
+    val local = Calendar.getInstance().apply { timeInMillis = localMillis }
+    val utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    utc.clear()
+    utc.set(local.get(Calendar.YEAR), local.get(Calendar.MONTH), local.get(Calendar.DAY_OF_MONTH))
+    return utc.timeInMillis
+}
+
+/**
+ * Turns the value returned by MaterialDatePicker (midnight UTC of the chosen day) into a local
+ * timestamp on that same calendar day, keeping the time of day of [keepTimeOfDayFrom] so several
+ * expenses on one day still sort in the order they were entered.
+ */
+fun datePickerSelectionToLocalMillis(selection: Long, keepTimeOfDayFrom: Long): Long {
+    val utc = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply { timeInMillis = selection }
+    val time = Calendar.getInstance().apply { timeInMillis = keepTimeOfDayFrom }
+    val result = Calendar.getInstance()
+    result.clear()
+    result.set(
+        utc.get(Calendar.YEAR), utc.get(Calendar.MONTH), utc.get(Calendar.DAY_OF_MONTH),
+        time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), time.get(Calendar.SECOND)
+    )
+    return result.timeInMillis
+}
+
+/**
  * Get the start of the current month as a Unix timestamp (midnight, 1st of month)
  */
 fun getCurrentMonthStart(): Long = monthStartOf(System.currentTimeMillis())
