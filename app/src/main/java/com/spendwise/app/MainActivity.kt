@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                         .setTitle("Sign Out")
                         .setMessage("Are you sure?")
                         .setPositiveButton("Sign Out") { _, _ ->
-                            userPrefs.clearAll()
+                            resetSession()
                             navController.navigate(
                                 R.id.loginFragment,
                                 null,
@@ -136,6 +136,16 @@ class MainActivity : AppCompatActivity() {
                 onBackPressedDispatcher.onBackPressed()
             }
         }
+    }
+
+    /**
+     * Ends the current user's session: clears saved preferences AND every cached ViewModel
+     * (expenses, budgets, last auth result) so the next user never sees the previous user's data
+     * and the login screen can't replay the previous successful login.
+     */
+    fun resetSession() {
+        userPrefs.clearAll()
+        viewModelStore.clear()
     }
 
     fun hideNavigation() {

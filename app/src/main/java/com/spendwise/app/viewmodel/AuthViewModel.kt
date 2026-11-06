@@ -17,6 +17,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     private val userDao = AppDatabase.getDatabase(application).userDao()
     private val expenseDao = AppDatabase.getDatabase(application).expenseDao()
+    private val budgetGoalDao = AppDatabase.getDatabase(application).budgetGoalDao()
     private val userPreferences = UserPreferences(application)
 
     private val _authState = MutableLiveData<Result<User>>()
@@ -123,7 +124,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         return result
     }
 
-    fun deleteAccount() {
+    /**
+     * Deletes the signed-in user's expenses, budget goals and account, then calls [onDone]
+     * on the main thread once everything is gone (so callers can safely leave the screen).
+     */
+    fun deleteAccount(onDone: () -> Unit = {}) {
         viewModelScope.launch {
             val email = userPreferences.userEmail
             val user = withContext(Dispatchers.IO) {
@@ -132,10 +137,12 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             user?.let {
                 withContext(Dispatchers.IO) {
                     expenseDao.deleteAllExpensesForUser(email)
+                    budgetGoalDao.deleteAllGoalsForUser(email)
                     userDao.deleteUser(it)
                 }
                 userPreferences.clearAll()
             }
+            onDone()
         }
     }
 
