@@ -20,7 +20,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Back"
+            android:contentDescription="@string/cd_back"
             android:src="@drawable/ic_back"
             android:tint="@color/colorTextPrimary"
             app:layout_constraintStart_toStartOf="parent"

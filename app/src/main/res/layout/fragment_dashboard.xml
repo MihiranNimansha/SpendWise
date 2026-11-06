@@ -270,6 +270,7 @@
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottieWarning"
+                android:contentDescription="@string/cd_budget_warning"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 app:lottie_autoPlay="false"
