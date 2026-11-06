@@ -17,6 +17,8 @@ import com.spendwise.app.data.preferences.UserPreferences
 import com.spendwise.app.databinding.FragmentAddExpenseBinding
 import com.spendwise.app.utils.CurrencyFormatter
 import com.spendwise.app.utils.snackbar
+import com.spendwise.app.utils.datePickerSelectionToLocalMillis
+import com.spendwise.app.utils.localMillisToDatePickerSelection
 import com.spendwise.app.viewmodel.ExpenseViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -110,11 +112,11 @@ class AddExpenseFragment : Fragment() {
     private fun showDatePicker() {
         val picker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Select Date")
-            .setSelection(selectedDate)
+            .setSelection(localMillisToDatePickerSelection(selectedDate))
             .build()
 
         picker.addOnPositiveButtonClickListener {
-            selectedDate = it
+            selectedDate = datePickerSelectionToLocalMillis(it, selectedDate)
             updateDateDisplay()
         }
         picker.show(childFragmentManager, "DATE_PICKER")
