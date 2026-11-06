@@ -13,3 +13,6 @@ app/build/
 
 # Local safety backup made before the 2026-11-06 fixes
 .backup_original_*/
+
+# Firebase config (the app does not use Firebase)
+app/google-services.json

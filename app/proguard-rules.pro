@@ -23,9 +23,6 @@
 # Keep Room entities
 -keep class com.spendwise.app.data.local.entity.** { *; }
 
-# Keep Firebase
--keep class com.google.firebase.** { *; }
-
 # Keep MPAndroidChart
 -keep class com.github.mikephil.charting.** { *; }
 
